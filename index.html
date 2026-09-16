@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>loop · YouTube snippet</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0b0d10;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+          'Segoe UI', Roboto, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 1.5rem;
+        color: #eef2f6;
+      }
+
+      .card {
+        background: #16191e;
+        border-radius: 2.5rem;
+        padding: 2rem;
+        width: 100%;
+        max-width: 960px;
+        box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.8),
+          0 0 0 1px rgba(255, 255, 255, 0.03);
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.75rem;
+        color: #ffffff;
+        padding-left: 0.25rem;
+      }
+
+      h1 span {
+        background: #2e3440;
+        padding: 0.2rem 1rem;
+        border-radius: 40px;
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: #b9c2d0;
+        letter-spacing: 0.3px;
+        border: 1px solid #3b4252;
+      }
+
+      .input-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .url-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        background: #1e2228;
+        border-radius: 100px;
+        padding: 0.4rem 0.4rem 0.4rem 1.5rem;
+        border: 1px solid #2c313a;
+        transition: border 0.2s, box-shadow 0.2s;
+      }
+
+      .url-row:focus-within {
+        border-color: #5e81ac;
+        box-shadow: 0 0 0 3px rgba(94, 129, 172, 0.2);
+      }
+
+      .url-icon {
+        font-size: 1.1rem;
+        opacity: 0.7;
+        color: #81a1c1;
+        display: flex;
+        align-items: center;
+      }
+
+      .url-row input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        padding: 0.9rem 0.5rem;
+        color: #ffffff;
+        font-weight: 400;
+        min-width: 200px;
+      }
+
+      .url-row input::placeholder {
+        color: #6c7a8d;
+        font-weight: 300;
+      }
+
+      .time-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+        background: #1a1e24;
+        padding: 0.8rem 1.5rem;
+        border-radius: 100px;
+        border: 1px solid #2c313a;
+        justify-content: space-between;
+      }
+
+      .time-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .time-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+        color: #8f9eb0;
+        margin-right: 0.25rem;
+      }
+
+      .time-input-wrap {
+        display: flex;
+        align-items: center;
+        background: #0f1217;
+        border-radius: 40px;
+        padding: 0.2rem 0.2rem 0.2rem 1rem;
+        border: 1px solid #2b313a;
+        transition: border 0.2s, box-shadow 0.2s;
+      }
+
+      .time-input-wrap:focus-within {
+        border-color: #5e81ac;
+        box-shadow: 0 0 0 2px rgba(94, 129, 172, 0.2);
+      }
+
+      .time-input-wrap input {
+        width: 75px;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 0.95rem;
+        padding: 0.45rem 0;
+        color: #eef2f6;
+        font-weight: 450;
+      }
+
+      .time-input-wrap input::placeholder {
+        color: #4b5563;
+        font-weight: 300;
+      }
+
+      .time-unit {
+        font-size: 0.75rem;
+        color: #6a7a8f;
+        padding-right: 0.75rem;
+        font-weight: 400;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .btn {
+        background: #2e3440;
+        border: none;
+        border-radius: 40px;
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #e5e9f0;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s, color 0.15s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        border: 1px solid #3b4252;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+      }
+
+      .btn:hover {
+        background: #3b4252;
+        color: #ffffff;
+      }
+
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .btn-primary {
+        background: #5e81ac;
+        border-color: #81a1c1;
+        color: #ffffff;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(94, 129, 172, 0.25);
+      }
+
+      .btn-primary:hover {
+        background: #81a1c1;
+        border-color: #88c0d0;
+        color: #0b0d10;
+      }
+
+      .btn-ghost {
+        background: transparent;
+        border-color: #3b4252;
+        color: #b9c2d0;
+      }
+
+      .btn-ghost:hover {
+        background: #242933;
+        border-color: #5e81ac;
+        color: #ffffff;
+      }
+
+      .video-container {
+        margin-top: 1.25rem;
+        border-radius: 2rem;
+        overflow: hidden;
+        background: #0b0d10;
+        box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px #2c313a;
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        position: relative;
+      }
+
+      .video-container iframe,
+      .video-container #ytPlayer {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        position: absolute;
+        inset: 0;
+      }
+
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+        padding: 0 0.5rem;
+        font-size: 0.8rem;
+        color: #7c8b9c;
+        font-weight: 400;
+        min-height: 1.8rem;
+      }
+
+      .status-message {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #4c566a;
+        transition: background 0.2s, box-shadow 0.2s;
+      }
+
+      .dot.active {
+        background: #a3be8c;
+        box-shadow: 0 0 8px #a3be8c;
+      }
+
+      .dot.error {
+        background: #bf616a;
+        box-shadow: 0 0 8px #bf616a;
+      }
+
+      .badge {
+        background: #242933;
+        padding: 0.2rem 0.8rem;
+        border-radius: 40px;
+        font-size: 0.7rem;
+        color: #a9b8ca;
+        border: 1px solid #353d48;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ===== SAVED CLIPS PANEL ===== */
+      .saved-panel {
+        margin-top: 1.75rem;
+        background: #12151a;
+        border-radius: 1.75rem;
+        border: 1px solid #232830;
+        padding: 1.25rem 1.5rem;
+        transition: all 0.2s;
+      }
+
+      .saved-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .saved-title {
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #8f9eb0;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .saved-count {
+        background: #2e3440;
+        color: #b9c2d0;
+        font-size: 0.7rem;
+        padding: 0.15rem 0.6rem;
+        border-radius: 40px;
+        border: 1px solid #3b4252;
+        font-weight: 500;
+      }
+
+      .saved-toggle {
+        background: transparent;
+        border: 1px solid #2e3440;
+        color: #8f9eb0;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.7rem;
+        transition: all 0.15s;
+        transform: rotate(0deg);
+      }
+
+      .saved-toggle:hover {
+        background: #242933;
+        border-color: #5e81ac;
+        color: #ffffff;
+      }
+
+      .saved-toggle.open {
+        transform: rotate(180deg);
+      }
+
+      .saved-list {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, margin-top 0.3s ease;
+      }
+
+      .saved-list.open {
+        max-height: 600px;
+        overflow-y: auto;
+        margin-top: 1rem;
+      }
+
+      .saved-list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .saved-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .saved-list::-webkit-scrollbar-thumb {
+        background: #2e3440;
+        border-radius: 3px;
+      }
+
+      .saved-empty {
+        font-size: 0.8rem;
+        color: #55606f;
+        font-style: italic;
+        padding: 0.75rem 0.25rem;
+        text-align: center;
+      }
+
+      .clip-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: #181c22;
+        border: 1px solid #232830;
+        border-radius: 1.25rem;
+        padding: 0.7rem 0.9rem 0.7rem 1rem;
+        transition: all 0.15s;
+        cursor: pointer;
+      }
+
+      .clip-item:hover {
+        background: #1e232b;
+        border-color: #3b4252;
+        transform: translateX(2px);
+      }
+
+      .clip-item.active {
+        border-color: #5e81ac;
+        background: #1c2230;
+      }
+
+      .clip-play {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #5e81ac;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        color: #ffffff;
+        flex-shrink: 0;
+        transition: all 0.15s;
+        box-shadow: 0 2px 8px rgba(94, 129, 172, 0.3);
+      }
+
+      .clip-item:hover .clip-play {
+        background: #81a1c1;
+        color: #0b0d10;
+        box-shadow: 0 2px 12px rgba(129, 161, 193, 0.5);
+      }
+
+      .clip-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+
+      .clip-name {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #eef2f6;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .clip-meta {
+        font-size: 0.72rem;
+        color: #6a7a8f;
+        font-family: 'SF Mono', 'Cascadia Mono', Consolas, monospace;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      .clip-meta .vid-id {
+        color: #5e81ac;
+        font-weight: 500;
+      }
+
+      .clip-meta .sep {
+        opacity: 0.4;
+      }
+
+      .clip-delete {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: transparent;
+        border: 1px solid #2e3440;
+        color: #6a7a8f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+        transition: all 0.15s;
+        line-height: 1;
+      }
+
+      .clip-delete:hover {
+        background: #3b2429;
+        border-color: #bf616a;
+        color: #bf616a;
+      }
+
+      /* small adjustments */
+      @media (max-width: 640px) {
+        .card {
+          padding: 1.5rem;
+          border-radius: 2rem;
+        }
+        h1 {
+          font-size: 1.4rem;
+          flex-wrap: wrap;
+        }
+        .time-row {
+          flex-direction: column;
+          align-items: stretch;
+          border-radius: 2rem;
+          gap: 1rem;
+        }
+        .actions {
+          justify-content: flex-end;
+        }
+        .url-row {
+          border-radius: 2rem;
+          padding-left: 1.2rem;
+        }
+        .saved-panel {
+          padding: 1rem 1.1rem;
+        }
+        .clip-meta .sep,
+        .clip-meta .vid-id {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>
+        ⏱️ YT looper
+        <span>no API key</span>
+      </h1>
+
+      <!-- input area -->
+      <div class="input-grid">
+        <div class="url-row">
+          <div class="url-icon">🔗</div>
+          <input
+            type="text"
+            id="youtubeUrl"
+            placeholder="Paste YouTube link (youtu.be/… or youtube.com/watch?v=…)"
+            value="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          />
+        </div>
+
+        <div class="time-row">
+          <div class="time-group">
+            <span class="time-label">start</span>
+            <div class="time-input-wrap">
+              <input
+                type="number"
+                id="startTime"
+                min="0"
+                step="1"
+                value="10"
+                placeholder="0"
+              />
+              <span class="time-unit">sec</span>
+            </div>
+          </div>
+
+          <div class="time-group">
+            <span class="time-label">end</span>
+            <div class="time-input-wrap">
+              <input
+                type="number"
+                id="endTime"
+                min="0"
+                step="1"
+                value="25"
+                placeholder="30"
+              />
+              <span class="time-unit">sec</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="loopBtn">
+              ⟳ loop &amp; save
+            </button>
+            <button class="btn btn-ghost" id="resetBtn">reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- video embed -->
+      <div class="video-container">
+        <div id="ytPlayer"></div>
+      </div>
+
+      <!-- status -->
+      <div class="status-bar">
+        <div class="status-message">
+          <span class="dot" id="statusDot"></span>
+          <span id="statusText">ready · paste URL and set times</span>
+        </div>
+        <div class="badge" id="timeBadge">loop: 10s – 25s</div>
+      </div>
+
+      <!-- saved clips panel -->
+      <div class="saved-panel">
+        <div class="saved-header" id="savedHeader">
+          <div class="saved-title">
+            💾 saved clips
+            <span class="saved-count" id="savedCount">0</span>
+          </div>
+          <button
+            class="saved-toggle"
+            id="savedToggle"
+            aria-label="toggle saved clips"
+          >
+            ▼
+          </button>
+        </div>
+        <div class="saved-list" id="savedList">
+          <!-- clip items injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- YouTube IFrame Player API (no key required) -->
+    <script>
+      // Load the IFrame Player API asynchronously, then call onYouTubeIframeAPIReady
+      var tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    </script>
+
+    <script>
+      (function () {
+        'use strict';
+
+        // ===== DOM =====
+        const urlInput = document.getElementById('youtubeUrl');
+        const startInput = document.getElementById('startTime');
+        const endInput = document.getElementById('endTime');
+        const loopBtn = document.getElementById('loopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const timeBadge = document.getElementById('timeBadge');
+        const savedHeader = document.getElementById('savedHeader');
+        const savedToggle = document.getElementById('savedToggle');
+        const savedList = document.getElementById('savedList');
+        const savedCount = document.getElementById('savedCount');
+
+        const STORAGE_KEY = 'yt-looper-saved-clips-v1';
+
+        // ===== STATE =====
+        let player = null; // YT.Player instance
+        let playerReady = false;
+        let currentVideoId = null;
+        let loopInterval = null; // setInterval handle for seek-back checks
+        let startSec = 10;
+        let endSec = 25;
+        let isLooping = false;
+        let activeClipId = null; // id of saved clip currently playing (if any)
+        let savedClips = []; // array of clip objects
+
+        // ===== VIDEO ID EXTRACTION =====
+        function extractVideoId(url) {
+          if (!url || typeof url !== 'string') return null;
+          const trimmed = url.trim();
+
+          let id = null;
+          const shortMatch = trimmed.match(
+            /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/
+          );
+          if (shortMatch) id = shortMatch[1];
+
+          if (!id) {
+            const watchMatch = trimmed.match(
+              /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/
+            );
+            if (watchMatch) id = watchMatch[1];
+          }
+
+          if (!id) {
+            const embedMatch = trimmed.match(
+              /(?:youtube\.com\/(?:embed|v|shorts|live)\/)([a-zA-Z0-9_-]{11})/
+            );
+            if (embedMatch) id = embedMatch[1];
+          }
+
+          if (
+            !id &&
+            trimmed.length === 11 &&
+            /^[a-zA-Z0-9_-]{11}$/.test(trimmed)
+          ) {
+            id = trimmed;
+          }
+
+          if (!id) {
+            try {
+              const urlObj = new URL(trimmed);
+              const vParam = urlObj.searchParams.get('v');
+              if (vParam && /^[a-zA-Z0-9_-]{11}$/.test(vParam)) id = vParam;
+              if (!id) {
+                const pathParts = urlObj.pathname
+                  .split('/')
+                  .filter((p) => p.length > 0);
+                for (const part of pathParts) {
+                  if (/^[a-zA-Z0-9_-]{11}$/.test(part)) {
+                    id = part;
+                    break;
+                  }
+                }
+              }
+            } catch (e) {
+              /* ignore */
+            }
+          }
+          return id;
+        }
+
+        // ===== TIME HELPERS =====
+        function getTimes() {
+          let start = parseInt(startInput.value, 10);
+          let end = parseInt(endInput.value, 10);
+          if (isNaN(start) || start < 0) start = 0;
+          if (isNaN(end) || end < 0) end = 0;
+          if (start >= end) {
+            end = start === end ? start + 5 : start + 2;
+          }
+          startInput.value = start;
+          endInput.value = end;
+          return { start, end };
+        }
+
+        function updateBadge(start, end) {
+          timeBadge.textContent = `loop: ${start}s – ${end}s`;
+        }
+
+        function setStatus(text, state) {
+          // state: 'active' | 'error' | 'idle'
+          statusText.textContent = text;
+          statusDot.classList.remove('active', 'error');
+          if (state === 'active') statusDot.classList.add('active');
+          else if (state === 'error') statusDot.classList.add('error');
+        }
+
+        // ===== STORAGE =====
+        function loadClips() {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            savedClips = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(savedClips)) savedClips = [];
+          } catch (e) {
+            savedClips = [];
+          }
+          renderClips();
+        }
+
+        function persistClips() {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedClips));
+          } catch (e) {
+            console.warn('Could not save clips:', e);
+          }
+        }
+
+        function clipId(videoId, start, end) {
+          return `${videoId}::${start}-${end}`;
+        }
+
+        function saveClip(videoId, start, end) {
+          const id = clipId(videoId, start, end);
+          const existing = savedClips.find((c) => c.id === id);
+          if (existing) {
+            // bump to top and refresh timestamp
+            existing.savedAt = Date.now();
+            savedClips = [existing, ...savedClips.filter((c) => c.id !== id)];
+          } else {
+            savedClips = [
+              {
+                id,
+                videoId,
+                start,
+                end,
+                name: `${videoId} · ${start}s–${end}s`,
+                savedAt: Date.now(),
+              },
+              ...savedClips,
+            ];
+          }
+          persistClips();
+          renderClips();
+        }
+
+        function deleteClip(id) {
+          savedClips = savedClips.filter((c) => c.id !== id);
+          persistClips();
+          renderClips();
+          if (activeClipId === id) activeClipId = null;
+        }
+
+        // ===== RENDER SAVED CLIPS =====
+        function renderClips() {
+          savedCount.textContent = savedClips.length;
+
+          // clear list
+          savedList.innerHTML = '';
+
+          if (savedClips.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'saved-empty';
+            empty.textContent =
+              'no clips saved yet — hit "loop & save" to keep one.';
+            savedList.appendChild(empty);
+            return;
+          }
+
+          savedClips.forEach((clip) => {
+            const item = document.createElement('div');
+            item.className = 'clip-item';
+            if (activeClipId === clip.id) item.classList.add('active');
+
+            // play button
+            const playBtn = document.createElement('div');
+            playBtn.className = 'clip-play';
+            playBtn.textContent = '▶';
+            item.appendChild(playBtn);
+
+            // info
+            const info = document.createElement('div');
+            info.className = 'clip-info';
+
+            const name = document.createElement('div');
+            name.className = 'clip-name';
+            name.textContent = clip.name;
+
+            const meta = document.createElement('div');
+            meta.className = 'clip-meta';
+            meta.innerHTML = `<span class="vid-id">${clip.videoId}</span><span class="sep">·</span><span>${clip.start}s → ${clip.end}s</span>`;
+
+            info.appendChild(name);
+            info.appendChild(meta);
+            item.appendChild(info);
+
+            // delete button
+            const delBtn = document.createElement('button');
+            delBtn.className = 'clip-delete';
+            delBtn.innerHTML = '×';
+            delBtn.title = 'delete clip';
+            delBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              deleteClip(clip.id);
+            });
+            item.appendChild(delBtn);
+
+            // click to load & loop
+            item.addEventListener('click', () => {
+              urlInput.value = `https://www.youtube.com/watch?v=${clip.videoId}`;
+              startInput.value = clip.start;
+              endInput.value = clip.end;
+              activeClipId = clip.id;
+              loopCurrent({ save: false, fromClip: true });
+              renderClips();
+            });
+
+            savedList.appendChild(item);
+          });
+        }
+
+        // ===== YOUTUBE IFRAME API =====
+        // Called automatically by the YT API script when ready
+        window.onYouTubeIframeAPIReady = function () {
+          player = new YT.Player('ytPlayer', {
+            height: '100%',
+            width: '100%',
+            videoId: 'dQw4w9WgXcQ',
+            playerVars: {
+              autoplay: 0,
+              controls: 1,
+              rel: 0,
+              modestbranding: 1,
+              playsinline: 1,
+              start: 10,
+              end: 25,
+            },
+            events: {
+              onReady: onPlayerReady,
+              onStateChange: onPlayerStateChange,
+            },
+          });
+        };
+
+        function onPlayerReady(event) {
+          playerReady = true;
+          setStatus('ready · paste URL and set times', 'idle');
+          // preload demo video paused at start (already set via playerVars)
+        }
+
+        function onPlayerStateChange(event) {
+          // If the video ends and we're supposed to be looping, the interval
+          // should catch it, but this is a safety net.
+          if (event.data === YT.PlayerState.ENDED && isLooping) {
+            seekToStartAndPlay();
+          }
+        }
+
+        function seekToStartAndPlay() {
+          if (!player || !playerReady) return;
+          try {
+            player.seekTo(startSec, true);
+            player.playVideo();
+          } catch (e) {
+            console.warn('seek failed', e);
+          }
+        }
+
+        // The core loop watcher — polls current time and seeks back
+        function startLoopWatcher() {
+          stopLoopWatcher();
+          // Poll every 100ms for smooth detection
+          loopInterval = setInterval(() => {
+            if (!player || !playerReady) return;
+            if (!isLooping) return;
+
+            let currentTime = 0;
+            try {
+              currentTime = player.getCurrentTime();
+            } catch (e) {
+              return;
+            }
+
+            // If we've reached or passed the end, jump back to start
+            if (currentTime >= endSec - 0.15) {
+              seekToStartAndPlay();
+            }
+          }, 100);
+        }
+
+        function stopLoopWatcher() {
+          if (loopInterval) {
+            clearInterval(loopInterval);
+            loopInterval = null;
+          }
+        }
+
+        // ===== CORE LOOP ACTION =====
+        function loopCurrent(opts = {}) {
+          const { save = true } = opts;
+
+          const url = urlInput.value.trim();
+          const videoId = extractVideoId(url);
+          if (!videoId) {
+            setStatus('⚠️ invalid YouTube URL', 'error');
+            return;
+          }
+
+          const { start, end } = getTimes();
+          startSec = start;
+          endSec = end;
+          updateBadge(start, end);
+
+          if (!player || !playerReady) {
+            setStatus('player not ready yet…', 'idle');
+            return;
+          }
+
+          // If it's a different video, load it; otherwise just seek
+          const currentVid = (() => {
+            try {
+              return player.getVideoData().video_id;
+            } catch (e) {
+              return null;
+            }
+          })();
+
+          const loadNewVideo = currentVid !== videoId;
+
+          isLooping = true;
+
+          if (loadNewVideo) {
+            setStatus(`loading ${videoId}…`, 'idle');
+            player.loadVideoById({
+              videoId: videoId,
+              startSeconds: start,
+              endSeconds: end,
+            });
+          } else {
+            player.seekTo(start, true);
+            player.playVideo();
+          }
+
+          // Give the player a moment to start, then kick off watcher
+          setTimeout(
+            () => {
+              if (isLooping) {
+                startLoopWatcher();
+                setStatus(`looping ${start}s → ${end}s`, 'active');
+              }
+            },
+            loadNewVideo ? 600 : 150
+          );
+
+          // Save the clip
+          if (save) {
+            saveClip(videoId, start, end);
+            activeClipId = clipId(videoId, start, end);
+            renderClips();
+          }
+        }
+
+        // ===== RESET =====
+        function resetPlayer() {
+          isLooping = false;
+          stopLoopWatcher();
+          activeClipId = null;
+          renderClips();
+
+          // Reset inputs to demo defaults
+          urlInput.value = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+          startInput.value = 10;
+          endInput.value = 25;
+          startSec = 10;
+          endSec = 25;
+          updateBadge(10, 25);
+
+          if (player && playerReady) {
+            try {
+              player.loadVideoById({
+                videoId: 'dQw4w9WgXcQ',
+                startSeconds: 10,
+                endSeconds: 25,
+              });
+              player.pauseVideo();
+            } catch (e) {
+              /* ignore */
+            }
+          }
+
+          setStatus('ready · paste URL and set times', 'idle');
+        }
+
+        // ===== EVENT LISTENERS =====
+        loopBtn.addEventListener('click', () => {
+          loopCurrent({ save: true });
+        });
+
+        resetBtn.addEventListener('click', resetPlayer);
+
+        // Stop looping when user edits inputs (so they don't get a stale loop)
+        urlInput.addEventListener('input', () => {
+          if (isLooping) {
+            isLooping = false;
+            stopLoopWatcher();
+            setStatus('URL changed · click loop', 'idle');
+          }
+        });
+        startInput.addEventListener('input', () => {
+          if (isLooping) {
+            isLooping = false;
+            stopLoopWatcher();
+            setStatus('time changed · click loop', 'idle');
+          }
+        });
+        endInput.addEventListener('input', () => {
+          if (isLooping) {
+            isLooping = false;
+            stopLoopWatcher();
+            setStatus('time changed · click loop', 'idle');
+          }
+        });
+
+        // Clamp on blur
+        startInput.addEventListener('blur', () => {
+          let v = parseInt(startInput.value, 10);
+          if (isNaN(v) || v < 0) v = 0;
+          startInput.value = v;
+        });
+        endInput.addEventListener('blur', () => {
+          let v = parseInt(endInput.value, 10);
+          if (isNaN(v) || v < 0) v = 0;
+          endInput.value = v;
+        });
+
+        // Panel toggle
+        savedHeader.addEventListener('click', () => {
+          const isOpen = savedList.classList.toggle('open');
+          savedToggle.classList.toggle('open', isOpen);
+        });
+
+        // ===== INIT =====
+        loadClips();
+        // Open panel by default if there are clips
+        if (savedClips.length > 0) {
+          savedList.classList.add('open');
+          savedToggle.classList.add('open');
+        }
+
+        // Clean up on unload
+        window.addEventListener('beforeunload', () => {
+          stopLoopWatcher();
+        });
+      })();
+    </script>
+  </body>
+</html>
