@@ -86,78 +86,78 @@
 
   // ===== TIME HELPERS =====
   // Parse a timestamp string into seconds.
-  // Accepts: "83", "1:23", "1:23.5", "1:02:03", "1:02:03.5", "" (→ 0)
-  function parseTime(str) {
-    if (str === null || str === undefined) return 0;
-    const s = String(str).trim();
-    if (s === '') return 0;
+// Accepts: "83", "1:23", "1:23.5", "1:02:03", "1:02:03.5", "" (→ 0)
+function parseTime(str) {
+  if (str === null || str === undefined) return 0;
+  const s = String(str).trim();
+  if (s === '') return 0;
 
-    // Plain number → seconds
-    if (/^\d+(\.\d+)?$/.test(s)) {
-      return Math.max(0, parseFloat(s));
-    }
-
-    // Colon-separated: m:ss or h:mm:ss (with optional decimals on the last part)
-    const parts = s.split(':');
-    if (parts.length === 2 || parts.length === 3) {
-      // Validate every part is a number
-      for (const p of parts) {
-        if (!/^\d+(\.\d+)?$/.test(p)) return null; // invalid
-      }
-      let total = 0;
-      if (parts.length === 2) {
-        // m:ss
-        total = parseInt(parts[0], 10) * 60 + parseFloat(parts[1]);
-      } else {
-        // h:mm:ss
-        total =
-          parseInt(parts[0], 10) * 3600 +
-          parseInt(parts[1], 10) * 60 +
-          parseFloat(parts[2]);
-      }
-      return Math.max(0, total);
-    }
-
-    return null; // unrecognised
+  // Plain number → seconds
+  if (/^\d+(\.\d+)?$/.test(s)) {
+    return Math.max(0, parseFloat(s));
   }
 
-  // Format seconds into "m:ss" (or "h:mm:ss" if ≥ 1 hour).
-  // Rounds to nearest whole second for display.
-  function formatTime(sec) {
-    const total = Math.max(0, Math.round(sec));
-    const h = Math.floor(total / 3600);
-    const m = Math.floor((total % 3600) / 60);
-    const s = total % 60;
-    const ss = String(s).padStart(2, '0');
-    if (h > 0) {
-      const mm = String(m).padStart(2, '0');
-      return `${h}:${mm}:${ss}`;
+  // Colon-separated: m:ss or h:mm:ss (with optional decimals on the last part)
+  const parts = s.split(':');
+  if (parts.length === 2 || parts.length === 3) {
+    // Validate every part is a number
+    for (const p of parts) {
+      if (!/^\d+(\.\d+)?$/.test(p)) return null; // invalid
     }
-    return `${m}:${ss}`;
-  }
-  function getTimes() {
-    let start = parseTime(startInput.value);
-    let end = parseTime(endInput.value);
-
-    // If parsing failed (null), fall back to 0
-    if (start === null || isNaN(start)) start = 0;
-    if (end === null || isNaN(end)) end = 0;
-
-    if (start >= end) {
-      end = start === end ? start + 5 : start + 2;
+    let total = 0;
+    if (parts.length === 2) {
+      // m:ss
+      total = parseInt(parts[0], 10) * 60 + parseFloat(parts[1]);
+    } else {
+      // h:mm:ss
+      total =
+        parseInt(parts[0], 10) * 3600 +
+        parseInt(parts[1], 10) * 60 +
+        parseFloat(parts[2]);
     }
-
-    // Rewrite the inputs with normalised timestamps so the user sees
-    // exactly what got interpreted
-    startInput.value = formatTime(start);
-    endInput.value = formatTime(end);
-
-    return { start, end };
+    return Math.max(0, total);
   }
 
-  function updateBadge(start, end) {
-    timeBadge.textContent = `loop: ${formatTime(start)} – ${formatTime(end)}`;
+  return null; // unrecognised
+}
+
+// Format seconds into "m:ss" (or "h:mm:ss" if ≥ 1 hour).
+// Rounds to nearest whole second for display.
+function formatTime(sec) {
+  const total = Math.max(0, Math.round(sec));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const ss = String(s).padStart(2, '0');
+  if (h > 0) {
+    const mm = String(m).padStart(2, '0');
+    return `${h}:${mm}:${ss}`;
   }
+  return `${m}:${ss}`;
+}
+function getTimes() {
+  let start = parseTime(startInput.value);
+  let end = parseTime(endInput.value);
+
+  // If parsing failed (null), fall back to 0
+  if (start === null || isNaN(start)) start = 0;
+  if (end === null || isNaN(end)) end = 0;
+
+  if (start >= end) {
+    end = start === end ? start + 5 : start + 2;
+  }
+
+  // Rewrite the inputs with normalised timestamps so the user sees
+  // exactly what got interpreted
+  startInput.value = formatTime(start);
+  endInput.value = formatTime(end);
+
+  return { start, end };
+}
+
+function updateBadge(start, end) {
+  timeBadge.textContent = `loop: ${formatTime(start)} – ${formatTime(end)}`;
+}
 
   function setStatus(text, state) {
     // state: 'active' | 'error' | 'idle'
@@ -193,24 +193,10 @@
 
   function saveClip(videoId, start, end) {
     const id = clipId(videoId, start, end);
-
-    // Grab the title from the player if we can. Freshly loaded videos
-    // expose this via getVideoData(). Falls back to null safely.
-    let title = null;
-    try {
-      if (player && playerReady) {
-        const data = player.getVideoData();
-        if (data && data.title) title = data.title;
-      }
-    } catch (e) {
-      /* ignore — title is a nice-to-have, not required */
-    }
-
     const existing = savedClips.find((c) => c.id === id);
     if (existing) {
-      // Bump to top and refresh timestamp + title (in case it was missing)
+      // bump to top and refresh timestamp
       existing.savedAt = Date.now();
-      if (title) existing.title = title;
       savedClips = [existing, ...savedClips.filter((c) => c.id !== id)];
     } else {
       savedClips = [
@@ -219,7 +205,6 @@
           videoId,
           start,
           end,
-          title,                                       // may be null
           name: `${videoId} · ${formatTime(start)}–${formatTime(end)}`,
           savedAt: Date.now(),
         },
@@ -270,12 +255,14 @@
 
       const name = document.createElement('div');
       name.className = 'clip-name';
-      name.textContent = clip.title || clip.videoId;
-      name.title = clip.title || clip.videoId;   // native tooltip for truncated titles
+      name.textContent = clip.name;
 
       const meta = document.createElement('div');
       meta.className = 'clip-meta';
       meta.innerHTML = `<span class="vid-id">${clip.videoId}</span><span class="sep">·</span><span>${formatTime(clip.start)} → ${formatTime(clip.end)}</span>`;
+      info.appendChild(name);
+      info.appendChild(meta);
+      item.appendChild(info);
 
       // delete button
       const delBtn = document.createElement('button');
@@ -332,46 +319,13 @@
   }
 
   function onPlayerStateChange(event) {
-    // Self-heal: whenever the player reaches a playable/playing state
-    // and we have an active clip missing a title, fill it in and persist.
-    if (
-      (event.data === YT.PlayerState.PLAYING ||
-        event.data === YT.PlayerState.PAUSED) &&
-      activeClipId
-    ) {
-      healActiveClipTitle();
-    }
-
     // If the video ends and we're supposed to be looping, the interval
     // should catch it, but this is a safety net.
     if (event.data === YT.PlayerState.ENDED && isLooping) {
       seekToStartAndPlay();
     }
   }
-  // If the currently active clip is missing a title, grab it from the
-  // freshly loaded player and quietly persist. No UI rebuild needed unless
-  // something actually changed.
-  function healActiveClipTitle() {
-    const clip = savedClips.find((c) => c.id === activeClipId);
-    if (!clip) return;
-    if (clip.title) return; // already has one, nothing to do
 
-    let title = null;
-    try {
-      if (player && playerReady) {
-        const data = player.getVideoData();
-        if (data && data.title) title = data.title;
-      }
-    } catch (e) {
-      return;
-    }
-
-    if (!title) return; // player hasn't loaded enough info yet — try again later
-
-    clip.title = title;
-    persistClips();
-    renderClips();
-  }
   function seekToStartAndPlay() {
     if (!player || !playerReady) return;
     try {
@@ -539,14 +493,14 @@
 
   // Clamp on blur
   // Normalise timestamp on blur
-  startInput.addEventListener('blur', () => {
-    const v = parseTime(startInput.value);
-    startInput.value = formatTime(v === null || isNaN(v) ? 0 : v);
-  });
-  endInput.addEventListener('blur', () => {
-    const v = parseTime(endInput.value);
-    endInput.value = formatTime(v === null || isNaN(v) ? 0 : v);
-  });
+startInput.addEventListener('blur', () => {
+  const v = parseTime(startInput.value);
+  startInput.value = formatTime(v === null || isNaN(v) ? 0 : v);
+});
+endInput.addEventListener('blur', () => {
+  const v = parseTime(endInput.value);
+  endInput.value = formatTime(v === null || isNaN(v) ? 0 : v);
+});
 
   // Panel toggle
   savedHeader.addEventListener('click', () => {
